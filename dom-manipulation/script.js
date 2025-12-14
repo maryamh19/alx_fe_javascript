@@ -130,10 +130,11 @@ async function postQuoteToServer(quote) {
 
     const data = await response.json();
     console.log("POST response:", data);
-    notifyUser("New quote synced to server!");
+    notifyUser("Quotes synced with server!"); // <-- exact text required
   } catch (error) {
     console.error(error);
   }
+
 }
 
 // ==============================
@@ -169,11 +170,12 @@ async function syncQuotes() {
   });
 
   if (updated) {
-    saveQuotes();
-    populateCategories();
-    showRandomQuote();
-    notifyUser("Quotes updated from server!");
-  }
+  saveQuotes();
+  populateCategories();
+  showRandomQuote();
+  notifyUser("Quotes synced with server!"); 
+}
+
 }
 
 // Auto-sync every 60 seconds
