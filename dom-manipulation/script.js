@@ -1,5 +1,5 @@
 // ==============================
-// Initial Quotes (Local Storage)
+// Load Quotes (Local Storage)
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   { text: "Believe in yourself.", category: "Motivation" },
   { text: "Knowledge is power.", category: "Education" },
@@ -11,7 +11,7 @@ let quotes = JSON.parse(localStorage.getItem("quotes")) || [
 ];
 
 // ==============================
-// Save Quotes to Local Storage
+// Save Quotes
 function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
@@ -22,9 +22,7 @@ function notifyUser(message) {
   const notification = document.getElementById("notification");
   notification.textContent = message;
   notification.style.color = "green";
-  setTimeout(() => {
-    notification.textContent = "";
-  }, 5000);
+  setTimeout(() => { notification.textContent = ""; }, 5000);
 }
 
 // ==============================
@@ -78,6 +76,7 @@ function filterQuotes() {
 // Create Add Quote Form
 function createAddQuoteForm() {
   const container = document.getElementById("formContainer");
+
   const textInput = document.createElement("input");
   textInput.id = "newQuoteText";
   textInput.type = "text";
@@ -143,8 +142,8 @@ function importFromJsonFile(event) {
 }
 
 // ==============================
-// Server Sync Simulation
-const serverUrl = "https://jsonplaceholder.typicode.com/posts"; // Mock endpoint
+// Server Simulation & Sync
+const serverUrl = "https://jsonplaceholder.typicode.com/posts";
 
 async function fetchServerQuotes() {
   try {
@@ -159,24 +158,26 @@ async function fetchServerQuotes() {
 
 async function syncWithServer() {
   const serverQuotes = await fetchServerQuotes();
-  let newAdded = false;
+  let updated = false;
+
   serverQuotes.forEach(serverQuote => {
     const index = quotes.findIndex(local => local.text === serverQuote.text);
     if (index >= 0) {
       if (quotes[index].category !== serverQuote.category) {
-        quotes[index].category = serverQuote.category; // server wins
-        newAdded = true;
+        quotes[index].category = serverQuote.category; // server takes precedence
+        updated = true;
       }
     } else {
       quotes.push(serverQuote);
-      newAdded = true;
+      updated = true;
     }
   });
-  if (newAdded) {
+
+  if (updated) {
     saveQuotes();
     populateCategories();
     showRandomQuote();
-    notifyUser("Quotes have been updated from the server!");
+    notifyUser("Quotes updated from server!");
   }
 }
 
@@ -184,7 +185,7 @@ async function syncWithServer() {
 setInterval(syncWithServer, 60000);
 
 // ==============================
-// Initialization
+// Initialize App
 document.addEventListener("DOMContentLoaded", () => {
   createAddQuoteForm();
   populateCategories();
