@@ -145,7 +145,7 @@ function importFromJsonFile(event) {
 // Server Simulation & Sync
 const serverUrl = "https://jsonplaceholder.typicode.com/posts";
 
-async function fetchServerQuotes() {
+async function fetchQuotesFromServer() {
   try {
     const response = await fetch(serverUrl);
     const data = await response.json();
@@ -157,7 +157,7 @@ async function fetchServerQuotes() {
 }
 
 async function syncWithServer() {
-  const serverQuotes = await fetchServerQuotes();
+  const serverQuotes = await fetchQuotesFromServer();
   let updated = false;
 
   serverQuotes.forEach(serverQuote => {
